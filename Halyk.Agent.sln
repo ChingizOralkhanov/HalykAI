@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5FEE38C6-CF2B-4823-86EF-4411E5B20821}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Cli", "src\Halyk.Cli\Halyk.Cli.csproj", "{E744DF7F-71FB-4C06-88E0-D391E1463143}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Core", "src\Halyk.Core\Halyk.Core.csproj", "{D679E33F-A809-4B9B-9E7D-46992150EDBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Ingest", "src\Halyk.Ingest\Halyk.Ingest.csproj", "{231597AA-B866-4FF7-8A83-B9E8AB312279}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Llm", "src\Halyk.Llm\Halyk.Llm.csproj", "{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Rules", "src\Halyk.Rules\Halyk.Rules.csproj", "{3C1EE25B-FFDE-46AC-9636-B435E4710451}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{04B25842-6128-4810-A3F4-2EF003F69049}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Halyk.Tests", "tests\Halyk.Tests\Halyk.Tests.csproj", "{081817C0-CDAD-4E25-88A7-C68E87CC75E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E744DF7F-71FB-4C06-88E0-D391E1463143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E744DF7F-71FB-4C06-88E0-D391E1463143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E744DF7F-71FB-4C06-88E0-D391E1463143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E744DF7F-71FB-4C06-88E0-D391E1463143}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D679E33F-A809-4B9B-9E7D-46992150EDBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D679E33F-A809-4B9B-9E7D-46992150EDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D679E33F-A809-4B9B-9E7D-46992150EDBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D679E33F-A809-4B9B-9E7D-46992150EDBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{231597AA-B866-4FF7-8A83-B9E8AB312279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{231597AA-B866-4FF7-8A83-B9E8AB312279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{231597AA-B866-4FF7-8A83-B9E8AB312279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{231597AA-B866-4FF7-8A83-B9E8AB312279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1EE25B-FFDE-46AC-9636-B435E4710451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1EE25B-FFDE-46AC-9636-B435E4710451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1EE25B-FFDE-46AC-9636-B435E4710451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1EE25B-FFDE-46AC-9636-B435E4710451}.Release|Any CPU.Build.0 = Release|Any CPU
+		{081817C0-CDAD-4E25-88A7-C68E87CC75E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{081817C0-CDAD-4E25-88A7-C68E87CC75E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{081817C0-CDAD-4E25-88A7-C68E87CC75E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{081817C0-CDAD-4E25-88A7-C68E87CC75E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E744DF7F-71FB-4C06-88E0-D391E1463143} = {5FEE38C6-CF2B-4823-86EF-4411E5B20821}
+		{D679E33F-A809-4B9B-9E7D-46992150EDBC} = {5FEE38C6-CF2B-4823-86EF-4411E5B20821}
+		{231597AA-B866-4FF7-8A83-B9E8AB312279} = {5FEE38C6-CF2B-4823-86EF-4411E5B20821}
+		{C4FCE7B5-7F83-4DF9-B7C9-6A29B9ADD27A} = {5FEE38C6-CF2B-4823-86EF-4411E5B20821}
+		{3C1EE25B-FFDE-46AC-9636-B435E4710451} = {5FEE38C6-CF2B-4823-86EF-4411E5B20821}
+		{081817C0-CDAD-4E25-88A7-C68E87CC75E9} = {04B25842-6128-4810-A3F4-2EF003F69049}
+	EndGlobalSection
+EndGlobal

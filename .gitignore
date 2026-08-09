@@ -1,0 +1,9 @@
+﻿bin/
+obj/
+work/
+work-private/
+*.user
+.idea/
+.vs/
+secrets.json
+*.tmp
