@@ -56,6 +56,13 @@ public static class SolveCommand
             model);
 
         var scenarios = template.Answers.Keys.ToList();
+        if (options.Value("only") is { } only)
+        {
+            var wanted = only.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            scenarios = scenarios.Where(wanted.Contains).ToList();
+            Console.WriteLine($"restricted to: {string.Join(", ", scenarios)}");
+        }
         if (int.TryParse(options.Value("limit"), out var limit) && limit > 0 && limit < scenarios.Count)
         {
             scenarios = scenarios.Take(limit).ToList();

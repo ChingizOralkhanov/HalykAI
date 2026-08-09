@@ -26,7 +26,7 @@ public sealed record SolvedScenario(string ScenarioId, IReadOnlyList<SolvedCell>
 /// </summary>
 public sealed class CovenantSolver
 {
-    public const string PromptVersion = "v1";
+    public const string PromptVersion = "v3";
 
     private const string SystemPrompt = """
         You audit corporate loan covenants for a bank.
@@ -58,6 +58,16 @@ public sealed class CovenantSolver
           not come from the transaction list.
 
         Be exact with numbers. Do not round to thousands.
+
+        Fill the answer fields strictly in schema order. `reasoning` comes first: work the
+        clause out there — metric, counted transactions, arithmetic, conclusion. `status` comes
+        last and is the conclusion you just reached; if while reasoning you changed your mind,
+        the final status reflects the corrected view, not the first guess.
+
+        Never return 0 or a placeholder as `actual`. Every metric here is computable: a ratio's
+        numerator and denominator come from the ledger and the financial figures quoted in the
+        documents. If a figure seems missing, look again — statements, audit notes and annexes
+        quote EBITDA, revenue and debt levels in their text.
         """;
 
     private readonly ModelClient _client;
@@ -75,6 +85,10 @@ public sealed class CovenantSolver
                 ["items"] = new JsonObject
                 {
                     ["type"] = "object",
+                    // Field order is deliberate: the verdict comes AFTER the reasoning. With the
+                    // verdict first, the model committed to a status, changed its mind while
+                    // writing the reasoning, and could not go back — three cells were lost to
+                    // exactly that on the calibration set.
                     ["properties"] = new JsonObject
                     {
                         ["clause"] = new JsonObject
@@ -82,16 +96,11 @@ public sealed class CovenantSolver
                             ["type"] = "string",
                             ["enum"] = new JsonArray(clauses.Select(c => (JsonNode)c!).ToArray()),
                         },
-                        ["status"] = new JsonObject
+                        ["reasoning"] = new JsonObject
                         {
                             ["type"] = "string",
-                            ["enum"] = new JsonArray("COMPLIANT", "BREACH"),
-                        },
-                        ["actual"] = new JsonObject { ["type"] = "number", ["description"] = "positive, two decimals" },
-                        ["evidence_txn_id"] = new JsonObject
-                        {
-                            ["type"] = new JsonArray("string", "null"),
-                            ["description"] = "the single deciding transaction, or null",
+                            ["description"] = "work through the clause here first: what the metric is, which "
+                                + "transactions and document facts count, the arithmetic, then the conclusion",
                         },
                         ["metric_kind"] = new JsonObject
                         {
@@ -109,9 +118,24 @@ public sealed class CovenantSolver
                             ["description"] = "USD per unit of the foreign currency, when one was applied",
                         },
                         ["threshold"] = new JsonObject { ["type"] = new JsonArray("number", "null") },
-                        ["reasoning"] = new JsonObject { ["type"] = "string", ["description"] = "two sentences at most" },
+                        ["actual"] = new JsonObject
+                        {
+                            ["type"] = "number",
+                            ["description"] = "positive, two decimals; the computed metric value from the reasoning above, never a placeholder",
+                        },
+                        ["evidence_txn_id"] = new JsonObject
+                        {
+                            ["type"] = new JsonArray("string", "null"),
+                            ["description"] = "the single deciding transaction, or null",
+                        },
+                        ["status"] = new JsonObject
+                        {
+                            ["type"] = "string",
+                            ["enum"] = new JsonArray("COMPLIANT", "BREACH"),
+                            ["description"] = "the conclusion of the reasoning above — they must agree",
+                        },
                     },
-                    ["required"] = new JsonArray("clause", "status", "actual", "evidence_txn_id", "metric_kind", "contributing_txn_ids", "reasoning"),
+                    ["required"] = new JsonArray("clause", "reasoning", "metric_kind", "contributing_txn_ids", "actual", "evidence_txn_id", "status"),
                 },
             },
         },
