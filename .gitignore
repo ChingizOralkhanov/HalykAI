@@ -7,3 +7,4 @@ work-private/
 .vs/
 secrets.json
 *.tmp
+work-public/

@@ -9,6 +9,8 @@ namespace Halyk.Cli;
 
 public static class SolveCommand
 {
+    private static int _supersededDropped;
+
     public static async Task<int> RunAsync(CommandLine options)
     {
         var dataset = options.Required("dataset");
@@ -54,6 +56,11 @@ public static class SolveCommand
             model);
 
         var scenarios = template.Answers.Keys.ToList();
+        if (int.TryParse(options.Value("limit"), out var limit) && limit > 0 && limit < scenarios.Count)
+        {
+            scenarios = scenarios.Take(limit).ToList();
+            Console.WriteLine($"limited to {limit} scenario(s): {string.Join(", ", scenarios)}");
+        }
         var solved = new System.Collections.Concurrent.ConcurrentBag<SolvedScenario>();
         var done = 0;
 
@@ -82,12 +89,14 @@ public static class SolveCommand
         // Where the stated value and the cited transactions disagree, the model gets one focused
         // second look. Code names the discrepancy; it never silently substitutes its own number,
         // because a carve-out or a reclassification makes the two legitimately differ.
-        var disputed = solved
-            .SelectMany(s => s.Cells.Select(cell => (Scenario: s.ScenarioId, Cell: cell)))
-            .Where(x => x.Cell.RecomputedActual is not null
-                        && x.Cell.Actual > 0
-                        && Math.Abs(x.Cell.RecomputedActual!.Value - x.Cell.Actual) / x.Cell.Actual > 0.01m)
-            .ToList();
+        var disputed = options.Flag("no-reconcile")
+            ? new List<(string Scenario, SolvedCell Cell)>()
+            : solved
+                .SelectMany(s => s.Cells.Select(cell => (Scenario: s.ScenarioId, Cell: cell)))
+                .Where(x => x.Cell.RecomputedActual is not null
+                            && x.Cell.Actual > 0
+                            && Math.Abs(x.Cell.RecomputedActual!.Value - x.Cell.Actual) / x.Cell.Actual > 0.01m)
+                .ToList();
 
         Console.WriteLine($"\nreconciling {disputed.Count} cell(s) where the cited transactions do not add up to the stated value");
 
@@ -134,6 +143,7 @@ public static class SolveCommand
         var problems = SubmissionValidator.Validate(submission, template);
         Console.WriteLine();
         Console.WriteLine($"solved {solved.Count(s => s.Error is null)}/{scenarios.Count} scenarios, {filled} cells fell back to a default");
+        Console.WriteLine($"superseded revisions dropped before the model saw them: {_supersededDropped}");
         Console.WriteLine($"wrote {outputPath}, {problems.Count} validation problem(s)");
         foreach (var problem in problems.Take(10)) Console.WriteLine($"  {problem.Location}: {problem.Message}");
 
@@ -154,7 +164,16 @@ public static class SolveCommand
         foreach (var file in files)
         {
             var path = Path.Combine(textDirectory, file.Replace('/', '_') + ".txt");
-            if (File.Exists(path)) documents.Add((file, File.ReadAllText(path)));
+            if (!File.Exists(path)) continue;
+
+            var text = File.ReadAllText(path);
+            if (RevisionFilter.IsSuperseded(text))
+            {
+                Interlocked.Increment(ref _supersededDropped);
+                continue;
+            }
+
+            documents.Add((file, text));
         }
 
         return documents;

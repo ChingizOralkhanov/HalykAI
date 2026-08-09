@@ -110,8 +110,9 @@ public sealed class ModelClient : IDisposable
                     continue;
                 }
 
+                // A malformed request stays malformed: retrying a 4xx only burns the clock.
                 if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"{label}: {(int)response.StatusCode} {body}");
+                    throw new InvalidOperationException($"{label}: {(int)response.StatusCode} {body}");
 
                 return Parse(body, request.ToolName);
             }
@@ -131,9 +132,6 @@ public sealed class ModelClient : IDisposable
         {
             ["model"] = _model,
             ["max_tokens"] = request.MaxTokens,
-            // Exact figures, not prose: sampling at the default temperature made two runs of the
-            // same input disagree on a ninth of the verdicts.
-            ["temperature"] = 0,
             ["system"] = new JsonArray(new JsonObject
             {
                 ["type"] = "text",
